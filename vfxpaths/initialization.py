@@ -20,7 +20,18 @@ def init_pattern_config():
         Configuration.file_path = config_path
         load_config_file()
     else:
-        pass
+        find_global_config = globals()
+        for item in find_global_config.keys():
+            if item.startswith("VFX_paths_config"):
+                maps_config_field(find_global_config[item])
+                return
+
+
+def maps_config_field(config_obj):
+    for field in VFXPathBaseConfig.config_keys():
+        current_value = getattr(config_obj, field, False)
+        if current_value:
+            setattr(Configuration, field, current_value)
 
 
 def register_config_file(config_path: str = ""):
@@ -46,7 +57,7 @@ def cancel_all_config():
     pass
 
 
-def cancel_config():
+def cancel_config(field: str):
     pass
 
 

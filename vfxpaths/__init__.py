@@ -5,7 +5,10 @@ from vfxpaths.resolve import Resolve
 
 
 # initialization config
-init_pattern_config()
+
+def init_config():
+    init_pattern_config()
+
 
 __all__ = ["Resolve"]
 

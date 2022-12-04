@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-import sys
-from vfxpaths.ability.path_env_resolve import resolve_real_path
 
 
 class VFXPathBaseConfig:
@@ -29,15 +27,5 @@ class Configuration(VFXPathBaseConfig):
     # The configuration path must be json
     file_path: str = ""
     current_target_path: str = ""
+    current_work_path: str = ""
 
-    @staticmethod
-    def get_root_path() -> str:
-        platform = sys.platform
-        if platform == "win32":
-            return resolve_real_path(Configuration.windows_root_path)
-        elif platform == "linux":
-            return resolve_real_path(Configuration.linux_root_path)
-        elif platform == "darwin":
-            return resolve_real_path(Configuration.mac_root_path)
-        else:
-            return ""

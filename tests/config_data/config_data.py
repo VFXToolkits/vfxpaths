@@ -1,0 +1,3 @@
+
+class ConfigTest:
+    pass
