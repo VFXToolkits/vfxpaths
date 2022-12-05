@@ -24,3 +24,7 @@ class NotFound(VFXBaseError):
 class ResolveError(VFXBaseError):
     """Raise when a template reference can not be resolved."""
 
+
+class FileNotExists(VFXBaseError):
+    """The specified file does not exist"""
+

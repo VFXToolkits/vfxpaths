@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
 import os
-import sys
 import json
 import logging
 
 from vfxpaths.global_config import Configuration, VFXPathBaseConfig
 from vfxpaths.ability.path_env_resolve import resolve_real_path
 
-__all__ = ["init_pattern_config", "register_config_file", "register_config", "cancel_all_config"]
 log = logging.getLogger("vfxpaths.initialization")
 
 
@@ -53,11 +50,23 @@ def register_config(pattern_data: dict):
             setattr(Configuration, field, pattern_data.get(field))
 
 
+def add_config_template(key: str, value: str):
+    VFXPathBaseConfig.config_template[key] = value
+
+
+def remove_config_template(key: str):
+    if VFXPathBaseConfig.config_template.get(key):
+        del VFXPathBaseConfig.config_template[key]
+
+
 def cancel_all_config():
     pass
 
 
 def cancel_config(field: str):
+    """
+    Clear the configuration of the specified field
+    """
     pass
 
 
@@ -79,3 +88,10 @@ def load_config_file():
 
     register_config(config_data)
 
+
+__all__ = ["init_pattern_config",
+           "register_config_file",
+           "register_config",
+           "add_config_template",
+           "remove_config_template",
+           "cancel_all_config"]
