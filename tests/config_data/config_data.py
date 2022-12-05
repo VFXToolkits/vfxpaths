@@ -1,3 +1,5 @@
 
 class ConfigTest:
-    pass
+    config_template = {"base_test": ""}
+
+

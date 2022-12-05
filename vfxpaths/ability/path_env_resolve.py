@@ -19,21 +19,21 @@ def get_root_path() -> str:
         return ""
 
 
-def resolve_real_path(old_path: str, custom_instance=None, instance: str = "") -> str:
-    if old_path == "":
+def resolve_real_path(source_path: str, custom_instance=None, instance: str = "") -> str:
+    if source_path == "":
         return ""
 
-    old_path = old_path.replace("\\", "/")
-    real_path: str = ""
-    if "[" in old_path:
-        real_path = env_path_replace(old_path)
+    new_path = source_path.replace("\\", "/")
 
-    if "[" in real_path:
-        real_path = keyword_replace(real_path, custom_instance)
+    if "[" in new_path:
+        new_path = env_path_replace(new_path)
 
-    if old_path.startswith("./"):
-        real_path = join_full_path(old_path, instance)
-    return real_path
+    if "[" in new_path:
+        new_path = keyword_replace(new_path, custom_instance)
+
+    if new_path.startswith("./"):
+        new_path = join_full_path(new_path, instance)
+    return new_path
 
 
 def env_path_replace(env_path: str) -> str:

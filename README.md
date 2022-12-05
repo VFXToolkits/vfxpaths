@@ -4,14 +4,17 @@ It is a system analysis framework related to VFX common file operations
 
 ## config format
 
-路径中包含的环境变量的表示方法： [ENV_NAME]
-需要返回字段中映射的模板表示法：{field}
-也可以不用在环境变量中存在，通过配置来配置特定路径读取
+Representation of environment variables included in the path: [ENV_NAME]
+The template representation of the mapping in the field needs to be returned: {field}
+It can also be configured to read a specific path without having to exist in the environment variable
 
-1. 配置文件可以通过环境变量来指定，并且初始启动的时候，优先级是最高的,环境变量`VFXPATHS_CONFIG_FILE`指向的值可以是具体的python数据，也可以是url地址，但必须是get，
-其中的路径通用支持上述提到的环境变量来书写，当系统中存在这样的环境变量的时候会解析为真实的路径。
+1. The configuration file can be specified through the environment variable, and the priority is the highest when it is initially started. 
+The environment variable 'VFXPATHS_ CONFIG_ The value pointed to by FILE 'can be specific python data or url address, but it must be get,
+The path generally supports the environment variables mentioned above to write. When such environment variables exist in the system, 
+they will be resolved to the real path.
 
-json的配置格式和说明：
+
+Configuration format and description of json:
 
 ```json
 {"config_template": {"key": "value"},
@@ -22,9 +25,10 @@ json的配置格式和说明：
 }
 ```
 
-2. 通过类来配置，在当前运行的环境中存在全局实例变量名称为`VFX_paths_config`开头，并且实例中包含上诉字段即可。
+2. Configure by class. In the current running environment, 
+there is a global instance variable named 'VFX_ paths_ Config ', and the instance contains the appeal field.
 
-注册模板的顺序按照上诉方式顺序执行，并且找到其中一种就停止查找。
+The registration template is executed in the order of appeal, and the search will be stopped when one of them is found.
 
 ## highlights
 
@@ -32,5 +36,5 @@ json的配置格式和说明：
 
 ## todo
 
-[x] 完成配置文件加载
-[x] 完成路径按规则分割为字典
+[x] Finish loading configuration file
+[x] The completion path is divided into dictionaries according to rules

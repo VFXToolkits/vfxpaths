@@ -2,13 +2,13 @@
 # -*- encoding: utf-8 -*-
 from vfxpaths.initialization import init_pattern_config
 from vfxpaths.resolve import Resolve
+from vfxpaths.ability.regex_match import MatchModel
 
-
-# initialization config
 
 def init_config():
+    # initialization config
     init_pattern_config()
 
 
-__all__ = ["Resolve"]
+__all__ = ["Resolve", "MatchModel"]
 
