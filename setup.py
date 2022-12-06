@@ -14,7 +14,7 @@ setup(
     version=_version,
     description='Common processing module of VFX path',
     long_description=open('README.rst').read(),
-    keywords='vfx, vfxpath, vfxfile, paths',
+    keywords='vfx, vfxpath, vfxfile, paths, read, write',
     url='https://github.com/VFXToolkits/vfxpaths',
     author='zuokangbo',
     author_email='zuokangbo@outlook.com',
