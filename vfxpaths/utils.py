@@ -6,7 +6,6 @@ import os.path
 from vfxpaths.global_config import Configuration
 from vfxpaths.ability.path_env_resolve import resolve_real_path
 from vfxpaths.ability.path_operation import check_file_exists, find_end_file, find_start_file, no_creation_exists
-from vfxpaths.error import FileNotExists
 
 
 class RW:

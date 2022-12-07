@@ -1,6 +1,9 @@
 # vfxpaths
 It is a system analysis framework related to VFX common file operations
 
+## install
+
+
 
 ## config format
 
@@ -28,10 +31,71 @@ json的配置格式和说明：
 
 ## highlights
 
+1. 在vfx工作中快速映射对应的路径到字典
+2. 常用路径的解析，生成真实的路径
+3. 常用文件或者json的读取
+4. 模板配置比较灵活，可用多种方式来配置
+
 ## support environment
+
+1. python3.7 以上版本
 
 ## todo
 
 [x] 完成配置文件加载
 [x] 完成路径按规则分割为字典
 [x] 常见文件的快速读写操作
+
+
+## 简单使用
+
+1. 模板匹配
+
+```python
+
+import os
+from vfxpaths import add_config_template, Resolve
+import vfxpaths
+
+add_config_template("key_name", 
+                    r"{drive}/{project}/assets/{asset_name}/{assets_id}/{task_name}/{status}/{task_name}/{file_name}_{level}_{index}_v{version}.{filetype}")
+vfxpaths.init_config()
+
+os.environ["project_root"] = "Z:/PJ_1581892300583608320/assets/changjing"
+
+path = "[project_root]/AS_158262777/moxingcaizhizonghezhizuo/approve/moxingcaizhizonghezhizuo/testzichan_eeee_01_v001.ma"
+
+test = Resolve(target_path=path, use_name="test")
+
+print(test.get_dict_data)
+
+```
+
+输出值
+
+```json
+{'drive': 'Z:',
+ 'project': 'PJ_1581892300583608320',
+ 'asset_name': 'changjing',
+ 'assets_id': 'AS_1582627772620505088',
+ 'task_name': 'moxingcaizhizonghezhizuo',
+ 'status': 'approve',
+ 'file_name': 'testzichan',
+ 'lod': 'eeee',
+ 'index': '01',
+ 'version': '001',
+ 'filetype': 'ma'}
+```
+
+2. 文件快速读取
+
+```python
+from vfxpaths import RW
+
+json_class = RW(r"E:\demo_1")
+
+# 读取 _setting.json结尾的文件
+
+print(json_class.read_end_json("_setting.json"))
+```
+
