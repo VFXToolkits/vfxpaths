@@ -3,7 +3,7 @@ It is a system analysis framework related to VFX common file operations
 
 ## install
 
-
+pip install vfxpaths
 
 ## config format
 
@@ -42,9 +42,9 @@ json的配置格式和说明：
 
 ## todo
 
-[x] 完成配置文件加载
-[x] 完成路径按规则分割为字典
-[x] 常见文件的快速读写操作
+1. 完成配置文件加载
+2. 完成路径按规则分割为字典
+3. 常见文件的快速读写操作
 
 
 ## 简单使用
