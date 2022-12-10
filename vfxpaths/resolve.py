@@ -128,8 +128,11 @@ class Resolve(BaseResolve):
         full_path = RegexCompile.field_match.value.sub(functools.partial(self.__to_expression_value, data=dict_data),
                                                        self._current_match_target)
         if full_path:
-            return full_path.replace("\\.", "/")
-        return ""
+            pattern = re.compile(r'\\.[a-zA-Z]{1,4}$')
+            suffix = pattern.search(full_path)
+            if suffix:
+                return full_path.replace(suffix.group(0), suffix.group(0).replace("\\.", "."))
+        return full_path.replace("\\.", "/")
 
     @staticmethod
     def __to_expression_value(func_match, data) -> str:

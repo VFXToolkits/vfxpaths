@@ -54,6 +54,14 @@ def add_config_template(key: str, value: str):
     VFXPathBaseConfig.config_template[key] = value
 
 
+def add_global_str_mapping(key: str, value: dict):
+    VFXPathBaseConfig.global_str_mapping[key] = value
+
+
+def register_global_str_mapping(global_value: dict):
+    VFXPathBaseConfig.global_str_mapping = global_value
+
+
 def remove_config_template(key: str):
     if VFXPathBaseConfig.config_template.get(key):
         del VFXPathBaseConfig.config_template[key]
@@ -93,5 +101,8 @@ __all__ = ["init_pattern_config",
            "register_config_file",
            "register_config",
            "add_config_template",
+           "register_global_str_mapping",
+           "add_global_str_mapping",
            "remove_config_template",
+           "maps_config_field",
            "cancel_all_config"]

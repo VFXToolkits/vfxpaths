@@ -19,6 +19,31 @@ def get_root_path() -> str:
         return ""
 
 
+def get_custom_root_path(key_name: str) -> str:
+    platform = sys.platform
+    current_root = Configuration.custom_root_path.get(key_name)
+    if not current_root:
+        return ""
+    current_root_path = current_root.get(system_field_map(platform), "")
+    if current_root_path:
+        return resolve_real_path(current_root_path)
+    return ""
+
+
+def path_string_replace(source_path: str) -> str:
+    platform = sys.platform
+    current_sys = system_field_map(platform)
+    all_field_data = Configuration.global_str_mapping
+    for item in all_field_data:
+        source_path = source_path.replace(item, all_field_data[item].get(current_sys))
+    return source_path
+
+
+def system_field_map(key: str):
+    sys_name = {"win32": "windows", "linux": "linux", "darwin": "mac"}
+    return sys_name[key]
+
+
 def resolve_real_path(source_path: str, custom_instance=None, instance: str = "") -> str:
     if source_path == "":
         return ""
@@ -33,6 +58,17 @@ def resolve_real_path(source_path: str, custom_instance=None, instance: str = ""
 
     if new_path.startswith("./"):
         new_path = join_full_path(new_path, instance)
+    if os.environ.get("VFXPATHS_GLOBAL_REPLACE") == "1":
+        new_path = path_string_replace(new_path)
+
+    if new_path.startswith("[root_path]"):
+        new_path = new_path.replace("[root_path]", get_root_path())
+
+    if new_path.startswith("[custom_root_path."):
+        temp_path_list = new_path.split("/")
+        use_key = temp_path_list[1].replace("]", "")
+        if get_custom_root_path(use_key):
+            new_path = new_path.replace(temp_path_list[1], get_custom_root_path(use_key))
     return new_path
 
 
