@@ -17,16 +17,20 @@
 
 配置2
 ```json
-{"config_template": {"base_test": "[root_server_template]/{type}/{sq_name}/{shot_name}/{sq_name}_{shot_name}_v{version}.{ext}"},
+{"config_template": {"base_test": "[custom_root_path.local_work_template]/{type}/{sq_name}/{shot_name}/{sq_name}_{shot_name}_v{version}.{ext}"},
   "windows_root_path": "D:/project/work",
   "mac_root_path": "/home/user_name/project/work",
   "linux_root_path": "/home/user_name/project/work",
   "custom_replaced_value": {"windows_root": "x:"},
-  "custom_root_path": {"local_work_path": {"linux": "/home/name/work", "windows": "D:/project/work"}},
-  "global_str_mapping": {"root_server_template": {"windows": "{root}/{project}/{project_name}", 
-    "linux": "{project}/{name}"}}
+  "custom_root_path": {"local_work_path": {"linux": "/home/name/work", 
+    "windows": "D:/project/work"},
+  "local_work_template": {"linux": "{project}/{name}", "windows": "{root}/{project}/{project_name}"}
+  },
+  "global_str_mapping": {"current_project_server": {"windows": "z:/project", "linux": "/project/name"}}
 }
 ```
+其中的[local_work_template]表示的需要替换的字段
+
 
 ## 路径映射
 
@@ -123,5 +127,19 @@ return
 
 ```text
 "Z:/project/PJ_158189/shots/sq001/sh010/sq001_sh010_v002.ma"
+```
+
+## 文件的快速读写
+
+例如 json文件
+
+```python
+from vfxpaths import RW
+
+json_class = RW(r"E:\demo_1")
+
+# 读取 _setting.json结尾的文件
+
+print(json_class.read_end_json("_setting.json"))
 ```
 

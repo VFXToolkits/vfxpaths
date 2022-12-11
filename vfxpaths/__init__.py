@@ -11,6 +11,7 @@ from vfxpaths.initialization import (init_pattern_config,
                                      register_global_str_mapping,
                                      add_global_str_mapping,
                                      maps_config_field,
+                                     set_target_path,
                                      remove_config_template)
 
 
@@ -21,6 +22,8 @@ def init_config():
 
 __all__ = ["Resolve",
 
+           "RW",
+
            "add_config_template",
            "remove_config_template",
            "register_config_file",
@@ -28,8 +31,8 @@ __all__ = ["Resolve",
            "add_global_str_mapping",
            "register_global_str_mapping",
            "maps_config_field",
+           "set_target_path",
 
            "get_custom_root_path",
            "get_root_path",
            "MatchModel"]
-

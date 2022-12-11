@@ -24,6 +24,10 @@ def init_pattern_config():
                 return
 
 
+def set_target_path(path: str) -> None:
+    Configuration.current_target_path = path.replace("\\", "/")
+
+
 def maps_config_field(config_obj):
     for field in VFXPathBaseConfig.config_keys():
         current_value = getattr(config_obj, field, False)
@@ -105,4 +109,5 @@ __all__ = ["init_pattern_config",
            "add_global_str_mapping",
            "remove_config_template",
            "maps_config_field",
+           "set_target_path",
            "cancel_all_config"]

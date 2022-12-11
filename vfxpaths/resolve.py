@@ -9,7 +9,7 @@ from collections import defaultdict
 from vfxpaths.global_config import Configuration
 from vfxpaths.error import NotFound, FormatError
 from vfxpaths.ability.regex_match import MatchModel, RegexCompile
-from vfxpaths.ability.path_env_resolve import resolve_real_path
+from vfxpaths.ability.path_env_resolve import resolve_real_path, get_resolve_template
 
 log = logging.getLogger(__name__)
 
@@ -111,6 +111,7 @@ class Resolve(BaseResolve):
 
         if self._current_match_target == "":
             for key, value in self._all_match_target:
+                value = get_resolve_template(value.replace("\\", "/").replace(".", r"\."))
                 path_dict = self.__find_match_pattern(value)
                 if path_dict:
                     return path_dict
@@ -151,7 +152,7 @@ class Resolve(BaseResolve):
         if self.use_name != "":
             current_pattern = Configuration.config_template.get(self.use_name)
             if current_pattern:
-                self._current_match_target = current_pattern.replace("\\", "/").replace(".", r"\.")
+                self._current_match_target = get_resolve_template(current_pattern.replace("\\", "/").replace(".", r"\."))
         else:
             log.warning("No template specified for use.")
 

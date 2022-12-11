@@ -65,11 +65,22 @@ def resolve_real_path(source_path: str, custom_instance=None, instance: str = ""
         new_path = new_path.replace("[root_path]", get_root_path())
 
     if new_path.startswith("[custom_root_path."):
-        temp_path_list = new_path.split("/")
-        use_key = temp_path_list[1].replace("]", "")
+        temp_path_list = new_path.split(".")[1].split("/")
+        use_key = temp_path_list[0].replace("]", "")
         if get_custom_root_path(use_key):
             new_path = new_path.replace(temp_path_list[1], get_custom_root_path(use_key))
     return new_path
+
+
+def get_resolve_template(source: str) -> str:
+    if "[custom_root_path." not in source:
+        return source
+    temp_path_list = source.split(".")[1].split("/")
+    use_key = temp_path_list[0].replace("]", "")
+    if get_custom_root_path(use_key):
+        new_source = source.replace(temp_path_list[1], get_custom_root_path(use_key))
+        return new_source
+    return source
 
 
 def env_path_replace(env_path: str) -> str:
