@@ -3,6 +3,11 @@ It is a system analysis framework related to VFX common file operations
 
 中文文档查看readme_zh.md
 
+## install
+
+`pip install vfxpaths`
+
+
 ## config format
 
 Representation of environment variables included in the path: [ENV_NAME]
