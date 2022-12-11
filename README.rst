@@ -15,6 +15,7 @@ Full help document url https://github.com/VFXToolkits/vfxpaths
 Update Log
 *************
 
+* 1.1.0 Add path global character replacement function
 * 1.0.2 Fix file read errors
 * 1.0.1 Add common file fast read/write function
 * 1.0.0 Update path template mapping and separation functions

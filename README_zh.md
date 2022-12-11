@@ -3,6 +3,11 @@ It is a system analysis framework related to VFX common file operations
 
 ## install
 
+pip install vfxpaths
+
+## full help
+
+查看 ./docs 中的具体使用教程
 
 
 ## config format
@@ -21,13 +26,18 @@ json的配置格式和说明：
   "windows_root_path": "",
   "mac_root_path": "",
   "linux_root_path": "",
-  "custom_replaced_value": {"key": ""}
+  "custom_replaced_value": {"key": ""},
+  "global_str_mapping": {"key": {"windows": "value"}}
 }
 ```
 
 2. 通过类来配置，在当前运行的环境中存在全局实例变量名称为`VFX_paths_config`开头，并且实例中包含上诉字段即可。
 
 注册模板的顺序按照上诉方式顺序执行，并且找到其中一种就停止查找。
+
+3. 全局字符串替换，可以对应不同的操作系统，替换对应的字符串, 如果下方的环境变量其中，就会启用路径替换的功能
+VFXPATHS_GLOBAL_REPLACE = 1
+
 
 ## highlights
 
@@ -42,9 +52,9 @@ json的配置格式和说明：
 
 ## todo
 
-[x] 完成配置文件加载
-[x] 完成路径按规则分割为字典
-[x] 常见文件的快速读写操作
+1. 完成配置文件加载
+2. 完成路径按规则分割为字典
+3. 常见文件的快速读写操作
 
 
 ## 简单使用

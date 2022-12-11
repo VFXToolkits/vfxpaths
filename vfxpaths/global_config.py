@@ -22,6 +22,12 @@ class VFXPathBaseConfig:
     # it will be replaced, which means that the priority of the environment variable is high
     custom_replaced_value: dict = {}
 
+    # Configure path by operating system
+    custom_root_path: dict = {}
+
+    # Global Path string Replacement Mapping
+    global_str_mapping: dict = {}
+
 
 class Configuration(VFXPathBaseConfig):
     # The configuration path must be json

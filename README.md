@@ -1,6 +1,7 @@
 # vfxpaths
 It is a system analysis framework related to VFX common file operations
 
+中文文档查看readme_zh.md
 
 ## config format
 
@@ -32,9 +33,58 @@ The registration template is executed in the order of appeal, and the search wil
 
 ## highlights
 
-## support environment
+1. Quickly mapping corresponding paths to dictionaries in VFX work
+2. Parsing of common pathways to generate real pathways
+3. Commonly used files or reads of a Simon
+4. Template configuration is more flexible and can be configured in many ways
 
-## todo
+## How to use
 
-[x] Finish loading configuration file
-[x] The completion path is divided into dictionaries according to rules
+1. Template matching
+
+```python
+
+import os
+from vfxpaths import add_config_template, Resolve
+import vfxpaths
+
+add_config_template("key_name", 
+                    r"{drive}/{project}/assets/{asset_name}/{assets_id}/{task_name}/{status}/{task_name}/{file_name}_{level}_{index}_v{version}.{filetype}")
+vfxpaths.init_config()
+
+os.environ["project_root"] = "Z:/PJ_1581892300583608320/assets/changjing"
+
+path = "[project_root]/AS_158262777/moxingcaizhizonghezhizuo/approve/moxingcaizhizonghezhizuo/testzichan_eeee_01_v001.ma"
+
+test = Resolve(target_path=path, use_name="test")
+
+print(test.get_dict_data)
+
+```
+
+```json
+{'drive': 'Z:',
+ 'project': 'PJ_1581892300583608320',
+ 'asset_name': 'changjing',
+ 'assets_id': 'AS_1582627772620505088',
+ 'task_name': 'moxingcaizhizonghezhizuo',
+ 'status': 'approve',
+ 'file_name': 'testzichan',
+ 'lod': 'eeee',
+ 'index': '01',
+ 'version': '001',
+ 'filetype': 'ma'}
+```
+
+2. Document rapid read and write
+
+```python
+from vfxpaths import RW
+
+json_class = RW(r"E:\demo_1")
+
+# Reads _Setting.jon ended papers
+
+print(json_class.read_end_json("_setting.json"))
+```
+
