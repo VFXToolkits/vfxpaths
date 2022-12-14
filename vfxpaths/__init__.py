@@ -2,6 +2,7 @@
 # -*- encoding: utf-8 -*-
 from vfxpaths.resolve import Resolve
 from vfxpaths.utils import RW
+from vfxpaths.path import Path
 from vfxpaths.ability.regex_match import MatchModel
 from vfxpaths.ability.path_env_resolve import get_root_path, get_custom_root_path
 from vfxpaths.initialization import (init_pattern_config,
@@ -23,6 +24,7 @@ def init_config():
 __all__ = ["Resolve",
 
            "RW",
+           "Path",
 
            "add_config_template",
            "remove_config_template",

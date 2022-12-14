@@ -14,13 +14,13 @@ setup(
     version=_version,
     description='Common processing module of VFX path',
     long_description=open('README.rst').read(),
-    keywords='vfx, vfxpath, vfxfile, paths, read, write',
+    keywords='vfx,vfxpath,vfxfile,paths,read,write',
     url='https://github.com/VFXToolkits/vfxpaths',
     author='zuokangbo',
     author_email='zuokangbo@outlook.com',
     license='MIT License',
     packages=[
-        'vfxpaths',
+        'vfxpaths', 'vfxpaths.ability'
     ],
     python_requires='>=3.7',
     zip_safe=False

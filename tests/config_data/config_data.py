@@ -6,5 +6,6 @@ class ConfigTest:
     linux_root_path: str = "/home/user_name/project/work"
     custom_replaced_value = {"windows_root": "x:"}
     custom_root_path = {"local_work_path": {"linux": "/home/name/work"}}
-    global_str_mapping = {"D:/project": {"windows": "z:/project", "linux": "/project"}}
+    global_str_mapping = {"D:/project": {"windows": "z:/project",
+                                         "linux": "/project"}}
 

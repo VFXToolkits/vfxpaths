@@ -15,10 +15,18 @@ class TestVfxpaths(unittest.TestCase):
         get_root_path = vfxpaths.get_root_path()
         self.assertEqual(get_root_path, "D:/project/work")
 
+    @unittest.skipIf(sys.platform != "win32", "windows system usd")
     def test_path_is_replace(self):
         os.environ["VFXPATHS_GLOBAL_REPLACE"] = "1"
         get_root_path = vfxpaths.get_root_path()
         self.assertEqual(get_root_path, "z:/project/work")
+        del os.environ["VFXPATHS_GLOBAL_REPLACE"]
+
+    @unittest.skipIf(sys.platform != "linux", "windows system usd")
+    def test_linux_path_is_replace(self):
+        os.environ["VFXPATHS_GLOBAL_REPLACE"] = "1"
+        get_root_path = vfxpaths.get_root_path()
+        self.assertEqual(get_root_path, "/home/user_name/project/work")
         del os.environ["VFXPATHS_GLOBAL_REPLACE"]
 
     @classmethod

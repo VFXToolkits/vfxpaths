@@ -47,7 +47,7 @@ def system_field_map(key: str):
 def resolve_real_path(source_path: str, custom_instance=None, instance: str = "") -> str:
     if source_path == "":
         return ""
-
+    source_path = os.path.expandvars(source_path)
     new_path = source_path.replace("\\", "/")
 
     if "[" in new_path:
