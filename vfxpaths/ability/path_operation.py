@@ -57,6 +57,29 @@ def no_creation_exists(func):
     return wrapper
 
 
+def to_resolve_real_path(func):
+    def wrapper(self, path: str = ""):
+        if path == "":
+            return func(self, get_resolve_real_path(self, self._target_path))
+        path_str = get_resolve_real_path(self, path)
+        ret = func(self, path_str)
+        return ret
+    return wrapper
+
+
+def to_forward_slash(func):
+    def wrapper(self, model, path: str = ""):
+        if isinstance(model, list):
+            model = get_resolve_real_path(self, "/".join(model))
+
+        if path == "":
+            return func(self, model, get_resolve_real_path(self, self._target_path))
+        path_str = get_resolve_real_path(self, path)
+        ret = func(self, model, path_str)
+        return ret
+    return wrapper
+
+
 def get_path_directory(self, path_str: str, no_check: int = 0) -> str:
     path_str = get_resolve_real_path(self, path_str)
     if os.path.isfile(path_str):
