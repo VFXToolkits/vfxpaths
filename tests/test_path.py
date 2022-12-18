@@ -1,5 +1,6 @@
 import os
 import unittest
+import sys
 
 import vfxpaths
 from tests.config_data.config_data import ConfigTest
@@ -21,6 +22,7 @@ class TestPath(unittest.TestCase):
         get_path = vfxpaths.Path(r"E:\Users\look_dev_tool")
         self.assertEqual(get_path.combine(["test", "a", "b"]), "E:/Users/look_dev_tool/test/a/b")
 
+    @unittest.skipIf(sys.platform != "win32", "windows system usd")
     def test_env_path_combine(self):
         get_path = vfxpaths.Path(r"[windir]/test")
         self.assertEqual(get_path.combine("abc"), "C:/Windows/test/abc")
