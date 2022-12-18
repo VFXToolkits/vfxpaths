@@ -96,5 +96,5 @@ def get_resolve_real_path(self, path_str: str) -> str:
     if path_str == "":
         path_str = self.get_target_path
     else:
-        path_str = resolve_real_path(path_str, None, self.work_path)
+        path_str = resolve_real_path(path_str, None, self._work_path)
     return path_str
