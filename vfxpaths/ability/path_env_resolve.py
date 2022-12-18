@@ -2,6 +2,7 @@
 # -*- encoding: utf-8 -*-
 import os
 import sys
+import re
 
 from vfxpaths.ability.regex_match import RegexCompile
 from vfxpaths.global_config import Configuration
@@ -75,11 +76,20 @@ def resolve_real_path(source_path: str, custom_instance=None, instance: str = ""
 def get_resolve_template(source: str) -> str:
     if "[custom_root_path." not in source:
         return source
-    temp_path_list = source.split(".")[1].split("/")
-    use_key = temp_path_list[0].replace("]", "")
-    if get_custom_root_path(use_key):
-        new_source = source.replace(temp_path_list[1], get_custom_root_path(use_key))
-        return new_source
+    full_field: dict = {}
+
+    matches = re.finditer(RegexCompile.custom_root_path.value, source, re.MULTILINE)
+
+    for item in matches:
+        full_field_key = item.group()
+        key_field_key = item.groups()
+        if full_field_key:
+            full_field[full_field_key] = key_field_key[0]
+
+    for item in full_field:
+        field_key = full_field[item]
+        if get_custom_root_path(field_key):
+            source = source.replace(item, get_custom_root_path(field_key))
     return source
 
 

@@ -2,12 +2,16 @@
 # -*- encoding: utf-8 -*-
 # common operation functions of the path
 import os
+import ctypes
+import shutil
 from datetime import datetime
 import pathlib
 import logging
+from typing import List
 
-from vfxpaths.ability.path_operation import to_forward_slash
+from vfxpaths.ability.path_operation import to_forward_slash, to_resolve_real_path
 from vfxpaths.ability.path_env_resolve import resolve_real_path
+from vfxpaths.ability.regex_match import RegexCompile
 from vfxpaths.global_config import Configuration
 
 log = logging.getLogger(__name__)
@@ -15,7 +19,8 @@ log = logging.getLogger(__name__)
 
 class SysSpecialFolder:
     def get_temp_path(self):
-        pass
+        if os.name == "nt":
+            pass
 
     @property
     def get_home_path(self) -> str:
@@ -25,6 +30,7 @@ class SysSpecialFolder:
 class OperationPath:
     def __init__(self):
         self._target_path = ""
+        self._work_path = ""
         self._pathlib_obj = pathlib.Path
 
     @to_forward_slash
@@ -33,14 +39,14 @@ class OperationPath:
         example: change_extension(c:\folder\file.ma, ".abc")
         return c:\folder\file.abc
         """
-        return str(pathlib.Path(file_path).with_suffix(ext)).replace("\\", "/")
+        return pathlib.Path(file_path).with_suffix(ext).as_posix()
 
     @to_forward_slash
     def combine(self, file_name: any, file_path: str = "") -> str:
         """Incoming parameters file_name str or list"""
-        return str(pathlib.Path(file_path, file_name)).replace("\\", "/")
+        return pathlib.Path(file_path, file_name).as_posix()
 
-    @to_forward_slash
+    @to_resolve_real_path
     def create_folder(self, path: str = "") -> bool:
         current_path = pathlib.Path(path)
         if current_path.is_file():
@@ -52,20 +58,68 @@ class OperationPath:
         pathlib.Path.mkdir(current_path)
         return True
 
-    def create_folders(self, path: list):
-        pass
+    def create_folders(self, path_list: List[str]) -> List[str]:
+        create_results: List[str] = []
+        if self._work_path == "":
+            raise KeyError("work_path need to set")
+        for item in path_list:
+            new_dir_path = pathlib.Path(self._work_path)/item
+            create_results.append(new_dir_path.as_posix())
+            if pathlib.Path.exists(new_dir_path):
+                continue
+            else:
+                new_dir_path.mkdir()
+        return create_results
 
-    def create_hidden(self, path: str = ""):
-        pass
+    def glob_target(self, re_model: str) -> List[str]:
+        """
+        Get all files under the folder
+        *.* or **/*.*
+        """
+        if not os.path.exists(self._target_path):
+            return []
+        return [f.as_posix() for f in pathlib.Path(self._target_path).glob(re_model)]
 
-    def rename(self, new_name: str):
-        pass
+    def glob_work(self, re_model: str) -> List[str]:
+        """
+        Get all files under the folder
+        *.* or **/*.*
+        """
+        if not os.path.exists(self._work_path):
+            return []
+        return [f.as_posix() for f in pathlib.Path(self._work_path).glob(re_model)]
 
+    @to_resolve_real_path
+    def create_hidden(self, path: str = "") -> str:
+        if pathlib.Path(path).exists():
+            return ""
+        if not os.path.basename(path).startswith("."):
+            return ""
+        if os.name == 'nt':
+            pathlib.Path(path).mkdir()
+            ctypes.windll.kernel32.SetFileAttributesW(path, 0x02)
+        else:
+            pathlib.Path(path).mkdir()
+
+    @to_forward_slash
+    def rename(self, new_name: str, path: str) -> bool:
+        if not pathlib.Path(path).exists():
+            return False
+        pathlib.Path(path).rename(new_name)
+        return True
+
+    @to_resolve_real_path
     def del_directory(self, path: str):
         """
         Delete the folder. The folder must be empty
         """
-        pass
+        if pathlib.Path(path).exists():
+            pathlib.Path.rmdir(pathlib.Path(path))
+
+    @to_resolve_real_path
+    def del_tree(self, path: str):
+        if pathlib.Path(path).exists():
+            shutil.rmtree(path)
 
     @to_forward_slash
     def fallback_dir(self, hierarchy: int = 0, path: str = "") -> str:
@@ -86,6 +140,19 @@ class OperationPath:
 
         path_list = path.split("/")[0: hierarchy]
         return "/".join(path_list)
+
+    @to_forward_slash
+    def extended_suffix_name(self, name: str, path: str = "") -> str:
+        file_suffix = pathlib.Path(path).suffix
+        if file_suffix:
+            log.warning(f"File has no suffix name: {path}")
+            return path
+        file_name = pathlib.Path(path).stem
+        return f"{os.path.dirname(path)}/{file_name}{name}{file_suffix}"
+
+    @to_forward_slash
+    def path_match(self, re_model: str, path: str) -> bool:
+        return pathlib.PurePath(path).match(re_model)
 
 
 class GetAttributePath(OperationPath):
@@ -126,14 +193,53 @@ class GetAttributePath(OperationPath):
     def get_full_path(self) -> str:
         return self._target_path
 
-    def find_first_folder(self):
-        pass
+    @property
+    def find_first_folder(self) -> str:
+        if self.isdir and self.exists:
+            all_file_list = os.listdir(self.get_full_path)
+            if all_file_list:
+                for item in all_file_list:
+                    if os.path.isdir("{}/{}".format(self.get_full_path, item)):
+                        return "{}/{}".format(self.get_full_path, item)
+        return ""
 
+    @property
     def find_first_file(self):
-        pass
+        if self.isdir and self.exists:
+            all_file_list = os.listdir(self.get_full_path)
+            if all_file_list:
+                for item in all_file_list:
+                    if os.path.isfile("{}/{}".format(self.get_full_path, item)):
+                        return "{}/{}".format(self.get_full_path, item)
+        return ""
 
-    def get_invalid_chars(self):
-        pass
+    @property
+    def get_invalid_chars(self) -> bool:
+        re_group = RegexCompile.invalid_path.value.match(self.get_full_path)
+        if re_group:
+            if self.get_full_path.replace(re_group.group(), "") == "":
+                return False
+            else:
+                return True
+        return True
+
+    @property
+    def get_files(self) -> List[str]:
+        if self.exists and self.isdir:
+            return [item for item in os.listdir(self.get_full_path) if os.path.isfile(f"{self.get_full_path}/{item}")]
+        return []
+
+    @property
+    def get_folders(self) -> List[str]:
+        if self.exists and self.isdir:
+            return [item for item in os.listdir(self.get_full_path) if os.path.isdir(f"{self.get_full_path}/{item}")]
+        return []
+
+    @property
+    def get_all_files(self) -> List[str]:
+        if self.exists and self.isdir:
+            return [item for item in os.listdir(self.get_full_path)]
+        return []
 
     @property
     def exists(self):
@@ -195,15 +301,23 @@ class GetAttributePath(OperationPath):
 
 
 class Path(GetAttributePath):
-    def __init__(self, target_path: str = ""):
+    def __init__(self, target_path: str = "", work_path: str = ""):
         super(Path, self).__init__()
-        self.work_path = ""
 
         if target_path == "":
-            self._target_path = Configuration.current_target_path
+            self._target_path = resolve_real_path(Configuration.current_target_path)
         else:
             self._target_path = target_path
 
         if self._target_path == "":
             raise KeyError("target_path is none")
         self._target_path = resolve_real_path(self._target_path)
+
+        if work_path == "":
+            self._work_path = resolve_real_path(Configuration.current_work_path)
+        else:
+            self._work_path = resolve_real_path(work_path)
+
+    def get_udim_list(self):
+        pass
+

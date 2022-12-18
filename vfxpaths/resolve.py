@@ -111,7 +111,7 @@ class Resolve(BaseResolve):
 
         if self._current_match_target == "":
             for key, value in self._all_match_target:
-                value = get_resolve_template(value.replace("\\", "/").replace(".", r"\."))
+                value = get_resolve_template(value.replace("\\", "/")).replace(".", r"\.")
                 path_dict = self.__find_match_pattern(value)
                 if path_dict:
                     return path_dict
