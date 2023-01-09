@@ -12,6 +12,7 @@ from typing import List
 from vfxpaths.ability.path_operation import to_forward_slash, to_resolve_real_path
 from vfxpaths.ability.path_env_resolve import resolve_real_path
 from vfxpaths.ability.regex_match import RegexCompile
+from vfxpaths.ability.path_const import FileMatchModel
 from vfxpaths.global_config import Configuration
 
 log = logging.getLogger(__name__)
@@ -295,9 +296,36 @@ class GetAttributePath(OperationPath):
 
         return total_size / 1024 * 1024
 
+    @property
     def is_w_ok(self) -> bool:
         """os.access(, os.W_OK)"""
         return os.access(self._target_path, os.W_OK)
+
+    @property
+    def is_frame(self) -> bool:
+        match = RegexCompile.seq_path.value.match(self._target_path)
+        if match:
+            return True
+        return False
+
+    def frame_mark(self, file_name: str = "") -> List:
+        if not file_name:
+            file_name = self._target_path
+
+        match = RegexCompile.sequence_mark.value.match(file_name)
+        if match:
+            return [match.group(1), match.group(2), match.group(3), match.group(4)]
+        return []
+
+    def is_udim(self, file_name: str = "") -> bool:
+        if not file_name:
+            file_name = self._target_path
+        match = RegexCompile.udim_path.value.match(file_name)
+        if match:
+            if 1000 <= match.group(1) <= 1099:
+                return True
+            return False
+        return False
 
 
 class Path(GetAttributePath):
@@ -318,6 +346,39 @@ class Path(GetAttributePath):
         else:
             self._work_path = resolve_real_path(work_path)
 
-    def get_udim_list(self):
+    def udim_list(self, file_name: str) -> List[str]:
+        if "<UDIM>" not in file_name:
+            return []
+        file_suffix = file_name.split("<UDIM>")[0]
+        file_prefix = file_name.split("<UDIM>")[1]
+        all_file_name = self.glob_target("{}*{}".format(file_suffix, file_prefix))
+        udim_file_list = []
+        for item_file_name in all_file_name:
+            if self.is_udim(os.path.basename(item_file_name)):
+                udim_file_list.append(item_file_name)
+        return udim_file_list
+
+    def frame_count(self, file_name: str) -> int:
+        return len(self.frame_list(file_name))
+
+    def frame_list(self, file_name: str) -> List[str]:
+        current_frame_mark = self.frame_mark(file_name)
+        if current_frame_mark:
+            if FileMatchModel.style2.value in file_name:
+                file_prefix = file_name.split(current_frame_mark[0])[0]
+                file_suffix = file_name.split(current_frame_mark[0])[1]
+            elif FileMatchModel.style3.value in file_name:
+                file_prefix = file_name.split(current_frame_mark[2])[0]
+                file_suffix = file_name.split(current_frame_mark[2])[1]
+            elif FileMatchModel.style1.value in file_name:
+                file_prefix = file_name.split(current_frame_mark[3])[0]
+                file_suffix = file_name.split(current_frame_mark[3])[1]
+            else:
+                return []
+            return self.glob_target("{}*{}".format(file_prefix, file_suffix))
+        else:
+            return []
+
+    def frame_format(self):
         pass
 
