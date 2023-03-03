@@ -77,9 +77,13 @@ class OperationPath:
         Get all files under the folder
         *.* or **/*.*
         """
+        find_path = self._target_path
+
         if not os.path.exists(self._target_path):
             return []
-        return [f.as_posix() for f in pathlib.Path(self._target_path).glob(re_model)]
+        if os.path.isfile(find_path):
+            find_path = os.path.dirname(self._target_path)
+        return [f.as_posix() for f in pathlib.Path(find_path).glob(re_model)]
 
     def glob_work(self, re_model: str) -> List[str]:
         """
@@ -381,4 +385,69 @@ class Path(GetAttributePath):
 
     def frame_format(self):
         pass
+
+    def get_file_version_list(self, suffix: str="") -> List[str]:
+        """
+        example: suffix=v*/*.hip
+        """
+        valid_files: List[str] = []
+        if suffix:
+            all_file = self.glob_target(suffix)
+        else:
+            all_file = self.glob_target()
+        for item in all_file:
+            file_name = os.path.basename(item)
+            match = RegexCompile.file_version_num.value.match(file_name)
+            if match:
+                valid_files.append(item.replace(f"{self._target_path}/", ""))
+        return valid_files
+
+    def get_folder_version_list(self, suffix: str ="") -> List[str]:
+        """
+        example: suffix=v*/test.hip
+        """
+        valid_files: List[str] = []
+        if suffix:
+            all_file = self.glob_target(suffix)
+        else:
+            all_file = self.glob_target()
+        for item in all_file:
+            match = RegexCompile.file_version_num.value.match(os.path.dirname(item))
+            if match:
+                valid_files.append(item)
+        return valid_files
+
+    def get_upversion(self) -> str:
+        """
+        return max version + 1 path
+        """
+        if self.isfile:
+            match = RegexCompile.file_version_num.value.match(self.get_file_name)
+            if match:
+                temp_version_file = self.get_file_name.replace(match.groups()[0], "*")
+                all_version_count = len(self.glob_target(temp_version_file))
+                new_version_file = temp_version_file.replace("*", f"{all_version_count + 1}".zfill(len(match.groups()[0])))
+                return f"{self.get_directory}/{new_version_file}"
+            else:
+                match_dir = RegexCompile.file_version_num.value.match(self.get_directory)
+                if not match_dir:
+                    return 
+                index = 1
+                while True:
+                    new_version_path = self._target_path.replace(match_dir.groups()[0], str(index).zfill(len(match_dir.groups()[0])))
+                    if not os.path.exists(new_version_path):
+                        return new_version_path
+                    index += 1
+
+        elif self.isdir:
+            match = RegexCompile.file_version_num.value.match(self._target_path)
+            index = 1
+            while True:
+                new_version_path = self._target_path.replace(match.groups()[0], str(index).zfill(len(match.groups()[0])))
+                if not os.path.exists(new_version_path):
+                    return new_version_path
+                index += 1
+        else:
+            return 
+
 
