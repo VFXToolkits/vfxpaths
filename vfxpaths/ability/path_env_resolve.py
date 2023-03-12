@@ -123,3 +123,15 @@ def join_full_path(relative_path: str, instance: str = "") -> str:
 
     full_path = os.path.join(instance, relative_path.replace("./", "/"))
     return full_path.replace("\\", "/")
+
+
+def relative_path_resolving(path: str, relative: str) -> str:
+    re_list = relative.split("/")
+    hierarchy = re_list.count("..")
+    path_list = path.split("/")
+    if len(path_list) <= hierarchy:
+        hierarchy = len(path_list) - 1
+
+    index = len(path_list) - hierarchy
+
+    return "/".join(path_list[0:index])

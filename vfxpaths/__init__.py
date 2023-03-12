@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 from vfxpaths.resolve import Resolve
+from .entity import Entity
 from vfxpaths.utils import RW
 from vfxpaths.path import Path
 from vfxpaths.ability.regex_match import MatchModel
@@ -25,6 +26,7 @@ __all__ = ["Resolve",
 
            "RW",
            "Path",
+           "Entity",
 
            "add_config_template",
            "remove_config_template",

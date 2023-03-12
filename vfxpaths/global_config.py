@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-
-class VFXPathBaseConfig:
+class Base:
     def __getitem__(self, item):
         return getattr(self, item)
 
     @classmethod
     def config_keys(cls) -> list:
         return [item for item in dir(cls) if not item.startswith("_") and item != "config_keys"]
+
+
+class VFXPathBaseConfig(Base):
 
     config_template: dict = {}
 
@@ -29,9 +31,35 @@ class VFXPathBaseConfig:
     global_str_mapping: dict = {}
 
 
+class TypeRuleFormat(Base):
+    # assets assets={"name":{entity_name}_{custom_name}_{version}.{extend}, path="."}
+    assets: dict = {}
+    shots: dict = {}
+
+
+class EntityConfig(Base):
+    __remove_key = ["config_keys", "rule_format"]
+
+    @classmethod
+    def config_keys(cls) -> list:
+        return [item for item in dir(cls) if not item.startswith("_") and item in cls.__remove_key]
+
+    entity_name: str = ""
+    rule_name: str = ""
+    rule_format = TypeRuleFormat
+    suffix: str = ""
+    prefix: str = ""
+    extend: str = ""
+    custom_name: str = ""
+    category: str = ""
+    version: str = "%03d"
+    numeral: str = "%04d"
+    map_key = {}
+
+
 class Configuration(VFXPathBaseConfig):
     # The configuration path must be json
     file_path: str = ""
     current_target_path: str = ""
     current_work_path: str = ""
-
+    entity_config = EntityConfig

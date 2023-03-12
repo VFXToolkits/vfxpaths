@@ -4,7 +4,7 @@ import os
 import json
 import logging
 
-from vfxpaths.global_config import Configuration, VFXPathBaseConfig
+from vfxpaths.global_config import Configuration, VFXPathBaseConfig, EntityConfig, TypeRuleFormat
 from vfxpaths.ability.path_env_resolve import resolve_real_path
 
 log = logging.getLogger("vfxpaths.initialization")
@@ -16,12 +16,6 @@ def init_pattern_config():
     if config_path:
         Configuration.file_path = config_path
         load_config_file()
-    else:
-        find_global_config = globals()
-        for item in find_global_config.keys():
-            if item.startswith("VFX_paths_config"):
-                maps_config_field(find_global_config[item])
-                return
 
 
 def set_target_path(path: str) -> None:
@@ -52,6 +46,14 @@ def register_config(pattern_data: dict):
     for field in VFXPathBaseConfig.config_keys():
         if pattern_data.get(field):
             setattr(Configuration, field, pattern_data.get(field))
+
+    if pattern_data.get("entity_config"):
+        for field in EntityConfig.config_keys():
+            setattr(EntityConfig, field, pattern_data["entity_config"].get(field))
+
+        if pattern_data.get("rule_format"):
+            for item in pattern_data.get("rule_format"):
+                setattr(TypeRuleFormat, item, pattern_data["entity_config"]["rule_format"].get(item))
 
 
 def add_config_template(key: str, value: str):

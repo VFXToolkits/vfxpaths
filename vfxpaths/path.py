@@ -386,7 +386,7 @@ class Path(GetAttributePath):
     def frame_format(self):
         pass
 
-    def get_file_version_list(self, suffix: str="") -> List[str]:
+    def get_file_version_list(self, suffix: str = "") -> List[str]:
         """
         example: suffix=v*/*.hip
         """
@@ -394,7 +394,7 @@ class Path(GetAttributePath):
         if suffix:
             all_file = self.glob_target(suffix)
         else:
-            all_file = self.glob_target()
+            all_file = self.glob_target("*.*")
         for item in all_file:
             file_name = os.path.basename(item)
             match = RegexCompile.file_version_num.value.match(file_name)
@@ -402,7 +402,7 @@ class Path(GetAttributePath):
                 valid_files.append(item.replace(f"{self._target_path}/", ""))
         return valid_files
 
-    def get_folder_version_list(self, suffix: str ="") -> List[str]:
+    def get_folder_version_list(self, suffix: str = "") -> List[str]:
         """
         example: suffix=v*/test.hip
         """
@@ -410,7 +410,7 @@ class Path(GetAttributePath):
         if suffix:
             all_file = self.glob_target(suffix)
         else:
-            all_file = self.glob_target()
+            all_file = self.glob_target("*.*")
         for item in all_file:
             match = RegexCompile.file_version_num.value.match(os.path.dirname(item))
             if match:
@@ -431,7 +431,7 @@ class Path(GetAttributePath):
             else:
                 match_dir = RegexCompile.file_version_num.value.match(self.get_directory)
                 if not match_dir:
-                    return 
+                    return ""
                 index = 1
                 while True:
                     new_version_path = self._target_path.replace(match_dir.groups()[0], str(index).zfill(len(match_dir.groups()[0])))
@@ -448,6 +448,5 @@ class Path(GetAttributePath):
                     return new_version_path
                 index += 1
         else:
-            return 
-
+            return ""
 
