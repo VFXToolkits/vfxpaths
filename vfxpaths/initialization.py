@@ -3,6 +3,7 @@
 import os
 import json
 import logging
+import yaml
 
 from vfxpaths.global_config import Configuration, VFXPathBaseConfig, EntityConfig, TypeRuleFormat
 from vfxpaths.ability.path_env_resolve import resolve_real_path
@@ -94,8 +95,11 @@ def load_config_file():
         if not os.path.exists(config_path):
             log.error("config_path not exists")
             return
-        with open(config_path, 'r') as json_file:
+        with open(config_path, 'r', encoding="utf-8") as json_file:
             config_data = json.load(json_file)
+    elif config_path.endswith(".yml"):
+        with open(config_path, 'r', encoding="utf-8") as yf:
+            config_data = yaml.load(yf, Loader=yaml.FullLoader)
     else:
         log.error("config file read error")
         return

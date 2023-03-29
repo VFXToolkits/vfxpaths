@@ -14,6 +14,7 @@ Full help document url https://github.com/VFXToolkits/vfxpaths
 *************
 Update Log
 *************
+* 1.2.2 add yaml config file support
 * 1.2.1 Add new path Sequence Scan
 * 1.2.0 Fixed the template variable replacement error, and added functions related to common path operations.
 * 1.1.1 Fix ability load error
